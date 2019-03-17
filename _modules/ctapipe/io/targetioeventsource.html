@@ -1,0 +1,437 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ctapipe.io.targetioeventsource &mdash; ctapipe v0.6.2.post208+git7b617c6</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> ctapipe
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.6.2.post208+git7b617c6
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/index.html">Getting Started For Developers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../development/index.html">Development Guidelines</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/index.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../FAQ.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../ctapipe_api/index.html">API Docs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../bibliography.html">References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Change Log</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">ctapipe</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>ctapipe.io.targetioeventsource</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for ctapipe.io.targetioeventsource</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">astropy</span> <span class="k">import</span> <span class="n">units</span> <span class="k">as</span> <span class="n">u</span>
+<span class="kn">from</span> <span class="nn">astropy.time</span> <span class="k">import</span> <span class="n">Time</span>
+<span class="kn">from</span> <span class="nn">ctapipe.instrument</span> <span class="k">import</span> <span class="n">TelescopeDescription</span>
+<span class="kn">from</span> <span class="nn">ctapipe.io.eventsource</span> <span class="k">import</span> <span class="n">EventSource</span>
+<span class="kn">from</span> <span class="nn">ctapipe.io.containers</span> <span class="k">import</span> <span class="n">TargetIODataContainer</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;TargetIOEventSource&#39;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="TargetIOEventSource"><a class="viewcode-back" href="../../../api/ctapipe.io.TargetIOEventSource.html#ctapipe.io.TargetIOEventSource">[docs]</a><span class="k">class</span> <span class="nc">TargetIOEventSource</span><span class="p">(</span><span class="n">EventSource</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    EventSource for the targetio unofficial data format, the data</span>
+<span class="sd">    format used by cameras containing TARGET modules, such as CHEC for</span>
+<span class="sd">    the GCT SST.</span>
+
+<span class="sd">    Extract waveform information from `target_io` to store them</span>
+<span class="sd">    into `ctapipe.io.containers`.</span>
+
+<span class="sd">    This Extractor can fill either the R0 or R1 event container, depending on</span>
+<span class="sd">    the file being read (The header of the file is checked for a flag</span>
+<span class="sd">    indicating that it has had R1 calibration applied to it).</span>
+
+<span class="sd">    This reader requires the TARGET libraries. The instructions to install</span>
+<span class="sd">    these libraries can be found here:</span>
+<span class="sd">    https://forge.in2p3.fr/projects/gct/wiki/Installing_CHEC_Software</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    _tio_reader : target_io.TargetIOEventReader()</span>
+<span class="sd">        C++ event reader for TargetIO files. Handles the event building into</span>
+<span class="sd">        an array of (n_pixels, n_samples) in C++, avoiding loops in Python</span>
+<span class="sd">    _n_events : int</span>
+<span class="sd">        number of events in the fits file</span>
+<span class="sd">    _n_samples : int</span>
+<span class="sd">        number of samples in the waveform</span>
+<span class="sd">    _r0_samples : ndarray</span>
+<span class="sd">        three dimensional array to store the R0 level waveform for each pixel</span>
+<span class="sd">        (n_channels, n_pixels, n_samples)</span>
+<span class="sd">    _r1_samples : ndarray</span>
+<span class="sd">        three dimensional array to store the R1 level waveform for each pixel</span>
+<span class="sd">        (n_channels, n_pixels, n_samples)</span>
+<span class="sd">    _samples : ndarray</span>
+<span class="sd">        pointer to the first index of either r0_samples or r1_samples</span>
+<span class="sd">        (depending if the file has been R1 calibrated) for passing to</span>
+<span class="sd">        TargetIO to be filled</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="n">parent</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">import</span> <span class="nn">target_driver</span>
+            <span class="kn">import</span> <span class="nn">target_io</span>
+            <span class="kn">import</span> <span class="nn">target_calib</span>
+        <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Cannot find TARGET libraries, please follow installation &quot;</span>
+                   <span class="s2">&quot;instructions from https://forge.in2p3.fr/projects/gct/&quot;</span>
+                   <span class="s2">&quot;wiki/Installing_CHEC_Software&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="k">raise</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_waveform_array_reader</span> <span class="o">=</span> <span class="n">target_io</span><span class="o">.</span><span class="n">WaveformArrayReader</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_config_constr</span> <span class="o">=</span> <span class="n">target_calib</span><span class="o">.</span><span class="n">CameraConfiguration</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_event_index</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_event_id</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_time_tack</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_time_sec</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_time_ns</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reader</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_waveform_array_reader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_url</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_n_events</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reader</span><span class="o">.</span><span class="n">fNEvents</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_first_event_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reader</span><span class="o">.</span><span class="n">fFirstEventID</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_last_event_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reader</span><span class="o">.</span><span class="n">fLastEventID</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_obs_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reader</span><span class="o">.</span><span class="n">fRunID</span>
+        <span class="n">n_modules</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reader</span><span class="o">.</span><span class="n">fNModules</span>
+        <span class="n">n_pix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reader</span><span class="o">.</span><span class="n">fNPixels</span>
+        <span class="n">n_samples</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reader</span><span class="o">.</span><span class="n">fNSamples</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">camera_config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config_constr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_reader</span><span class="o">.</span><span class="n">fCameraVersion</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_n_cells</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">camera_config</span><span class="o">.</span><span class="n">GetNCells</span><span class="p">()</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">camera_config</span><span class="o">.</span><span class="n">GetMapping</span><span class="p">(</span><span class="n">n_modules</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_optical_foclen</span> <span class="o">=</span> <span class="mf">2.283</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pixel_pos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">m</span><span class="o">.</span><span class="n">GetXPixVector</span><span class="p">(),</span> <span class="n">m</span><span class="o">.</span><span class="n">GetYPixVector</span><span class="p">()])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_refshape</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>  <span class="c1"># TODO: Get correct values for CHEC-S</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_refstep</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># TODO: Get correct values for CHEC-S</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_time_slice</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># TODO: Get correct values for CHEC-S</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_chec_tel</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="c1"># Init fields</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_r0_samples</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_r1_samples</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_first_cell_ids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_pix</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint16</span><span class="p">)</span>
+
+        <span class="c1"># Check if file is already r1 (Information obtained from a flag</span>
+        <span class="c1"># in the file&#39;s header)</span>
+        <span class="n">is_r1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reader</span><span class="o">.</span><span class="n">fR1</span>
+        <span class="k">if</span> <span class="n">is_r1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_r1_samples</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
+                <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_pix</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">),</span>
+                <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_get_tio_event</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reader</span><span class="o">.</span><span class="n">GetR1Event</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_samples</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_r1_samples</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_r0_samples</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
+                <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_pix</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">),</span>
+                <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint16</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_get_tio_event</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reader</span><span class="o">.</span><span class="n">GetR0Event</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_samples</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_r0_samples</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_init_container</span><span class="p">()</span>
+
+<div class="viewcode-block" id="TargetIOEventSource.is_compatible"><a class="viewcode-back" href="../../../api/ctapipe.io.TargetIOEventSource.html#ctapipe.io.TargetIOEventSource.is_compatible">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">is_compatible</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">file_path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.tio&#39;</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_init_container</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Prepare the ctapipe event container, and fill it with the information</span>
+<span class="sd">        that does not change with event, including the instrument information.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">chec_tel</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="n">TargetIODataContainer</span><span class="p">()</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s1">&#39;origin&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;targetio&quot;</span>
+
+        <span class="n">data</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s1">&#39;input&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_url</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s1">&#39;max_events&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_events</span>
+
+        <span class="c1"># Instrument information</span>
+        <span class="n">pix_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pixel_pos</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">m</span>
+        <span class="n">foclen</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_optical_foclen</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">m</span>
+        <span class="n">teldesc</span> <span class="o">=</span> <span class="n">TelescopeDescription</span><span class="o">.</span><span class="n">guess</span><span class="p">(</span><span class="o">*</span><span class="n">pix_pos</span><span class="p">,</span> <span class="n">foclen</span><span class="p">)</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">inst</span><span class="o">.</span><span class="n">subarray</span><span class="o">.</span><span class="n">tels</span><span class="p">[</span><span class="n">chec_tel</span><span class="p">]</span> <span class="o">=</span> <span class="n">teldesc</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">data</span>
+
+    <span class="k">def</span> <span class="nf">_update_container</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update the ctapipe event containers with the information from the</span>
+<span class="sd">        current event being pointed to in TargetIO.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span>
+        <span class="n">chec_tel</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="n">obs_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obs_id</span>
+        <span class="n">event_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_event_id</span>
+        <span class="n">tels</span> <span class="o">=</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_chec_tel</span><span class="p">}</span>
+
+        <span class="n">data</span><span class="o">.</span><span class="n">r0</span><span class="o">.</span><span class="n">obs_id</span> <span class="o">=</span> <span class="n">obs_id</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">r0</span><span class="o">.</span><span class="n">event_id</span> <span class="o">=</span> <span class="n">event_id</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">r0</span><span class="o">.</span><span class="n">tels_with_data</span> <span class="o">=</span> <span class="n">tels</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">r1</span><span class="o">.</span><span class="n">obs_id</span> <span class="o">=</span> <span class="n">obs_id</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">r1</span><span class="o">.</span><span class="n">event_id</span> <span class="o">=</span> <span class="n">event_id</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">r1</span><span class="o">.</span><span class="n">tels_with_data</span> <span class="o">=</span> <span class="n">tels</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">dl0</span><span class="o">.</span><span class="n">obs_id</span> <span class="o">=</span> <span class="n">obs_id</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">dl0</span><span class="o">.</span><span class="n">event_id</span> <span class="o">=</span> <span class="n">event_id</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">dl0</span><span class="o">.</span><span class="n">tels_with_data</span> <span class="o">=</span> <span class="n">tels</span>
+
+        <span class="n">data</span><span class="o">.</span><span class="n">trig</span><span class="o">.</span><span class="n">tels_with_trigger</span> <span class="o">=</span> <span class="p">[</span><span class="n">chec_tel</span><span class="p">]</span>
+
+        <span class="n">data</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s1">&#39;tack&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_time_tack</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s1">&#39;sec&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_time_sec</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s1">&#39;ns&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_time_ns</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">trig</span><span class="o">.</span><span class="n">gps_time</span> <span class="o">=</span> <span class="n">Time</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_time_sec</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">s</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_time_ns</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">ns</span><span class="p">,</span>
+                                  <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;unix&#39;</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="s1">&#39;utc&#39;</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="mi">9</span><span class="p">)</span>
+
+        <span class="n">data</span><span class="o">.</span><span class="n">count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_event_index</span>
+
+        <span class="n">data</span><span class="o">.</span><span class="n">r0</span><span class="o">.</span><span class="n">tel</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">r1</span><span class="o">.</span><span class="n">tel</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">dl0</span><span class="o">.</span><span class="n">tel</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">dl1</span><span class="o">.</span><span class="n">tel</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">mc</span><span class="o">.</span><span class="n">tel</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">targetio</span><span class="o">.</span><span class="n">tel</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+        <span class="c1"># load the data per telescope/chan</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">r0</span><span class="o">.</span><span class="n">tel</span><span class="p">[</span><span class="n">chec_tel</span><span class="p">]</span><span class="o">.</span><span class="n">waveform</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_r0_samples</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">r1</span><span class="o">.</span><span class="n">tel</span><span class="p">[</span><span class="n">chec_tel</span><span class="p">]</span><span class="o">.</span><span class="n">waveform</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_r1_samples</span>
+
+        <span class="c1"># Load the TargetIO specific data per telescope/chan</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">targetio</span><span class="o">.</span><span class="n">tel</span><span class="p">[</span><span class="n">chec_tel</span><span class="p">]</span><span class="o">.</span><span class="n">first_cell_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_first_cell_ids</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">r0</span><span class="o">.</span><span class="n">tel</span><span class="p">[</span><span class="n">chec_tel</span><span class="p">]</span><span class="o">.</span><span class="n">num_samples</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_samples</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="c1"># Some information that currently exists in the mc container, but is</span>
+        <span class="c1"># useful for real data (essentially the reference pulse shape,</span>
+        <span class="c1"># which may be used in charge extraction methods)</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">mc</span><span class="o">.</span><span class="n">tel</span><span class="p">[</span><span class="n">chec_tel</span><span class="p">]</span><span class="o">.</span><span class="n">reference_pulse_shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_refshape</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">mc</span><span class="o">.</span><span class="n">tel</span><span class="p">[</span><span class="n">chec_tel</span><span class="p">]</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s1">&#39;refstep&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_refstep</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">mc</span><span class="o">.</span><span class="n">tel</span><span class="p">[</span><span class="n">chec_tel</span><span class="p">]</span><span class="o">.</span><span class="n">time_slice</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_time_slice</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">_current_event_index</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_event_index</span>
+
+    <span class="nd">@_current_event_index</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">_current_event_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Setting the event index will cause the event to be saught from</span>
+<span class="sd">        TargetIO, and the Containers to point to</span>
+<span class="sd">        the correct event. The ctapipe event containers are then updated</span>
+<span class="sd">        with this new event&#39;s information.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_event_index</span> <span class="o">=</span> <span class="n">val</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_get_tio_event</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_samples</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_first_cell_ids</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_event_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reader</span><span class="o">.</span><span class="n">fCurrentEventID</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_time_tack</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reader</span><span class="o">.</span><span class="n">fCurrentTimeTack</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_time_sec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reader</span><span class="o">.</span><span class="n">fCurrentTimeSec</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_time_ns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reader</span><span class="o">.</span><span class="n">fCurrentTimeNs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_container</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_generator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_event_index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_events</span><span class="p">):</span>
+            <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span>
+        <span class="k">return</span>
+
+    <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">num</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_events</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_events</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_events</span> <span class="o">&lt;</span> <span class="n">num</span><span class="p">:</span>
+            <span class="n">num</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_events</span>
+        <span class="k">return</span> <span class="n">num</span>
+
+    <span class="k">def</span> <span class="nf">_get_event_by_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_current_event_index</span> <span class="o">=</span> <span class="n">index</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span>
+
+    <span class="k">def</span> <span class="nf">_get_event_by_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_id</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">((</span><span class="n">event_id</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_first_event_id</span><span class="p">)</span> <span class="o">|</span>
+                <span class="p">(</span><span class="n">event_id</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last_event_id</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Event id </span><span class="si">{event_id}</span><span class="s2"> not found in file&quot;</span><span class="p">)</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reader</span><span class="o">.</span><span class="n">GetEventIndex</span><span class="p">(</span><span class="n">event_id</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_event_by_index</span><span class="p">(</span><span class="n">index</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright ctapipe developers.  Last updated 17 Mar 2019 13:37
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

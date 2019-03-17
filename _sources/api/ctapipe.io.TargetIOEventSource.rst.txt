@@ -1,0 +1,17 @@
+TargetIOEventSource
+===================
+
+.. currentmodule:: ctapipe.io
+
+.. autoclass:: TargetIOEventSource
+   :show-inheritance:
+
+   .. rubric:: Methods Summary
+
+   .. autosummary::
+
+      ~TargetIOEventSource.is_compatible
+
+   .. rubric:: Methods Documentation
+
+   .. automethod:: is_compatible
